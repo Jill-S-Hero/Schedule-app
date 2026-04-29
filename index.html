@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+
+<body>
+
+<h2>ご都合を教えてください🌿</h2>
+
+<input id="name" placeholder="お名前"><br><br>
+
+<div id="dates"></div>
+
+<button onclick="submitData()">送信</button>
+<button onclick="deleteData()">削除</button>
+
+<script>
+const dates = ["5/10","5/12","5/15"];
+const answers = Array(dates.length).fill("");
+
+const container = document.getElementById("dates");
+
+dates.forEach((d,i)=>{
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <p>${d}</p>
+    <button onclick="setAnswer(${i},'◎')">◎</button>
+    <button onclick="setAnswer(${i},'○')">○</button>
+    <button onclick="setAnswer(${i},'△')">△</button>
+    <button onclick="setAnswer(${i},'×')">×</button>
+    <span id="ans${i}"></span>
+  `;
+  container.appendChild(div);
+});
+
+function setAnswer(i,val){
+  answers[i]=val;
+  document.getElementById("ans"+i).textContent=val;
+}
+
+function submitData(){
+  fetch("【Apps Script URL】",{
+    method:"POST",
+    body:JSON.stringify({
+      name:document.getElementById("name").value,
+      answers:answers
+    })
+  }).then(()=>alert("送信完了🌿"));
+}
+
+function deleteData(){
+  fetch("【Apps Script URL】",{
+    method:"POST",
+    body:JSON.stringify({
+      mode:"delete",
+      name:document.getElementById("name").value
+    })
+  }).then(()=>alert("削除しました"));
+}
+</script>
+
+</body>
+</html>

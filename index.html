@@ -59,21 +59,24 @@ function deleteData(){
   })
   .then(res => res.json())
   .then(data => {
+    console.log(data); // ←まず確認
+
     if(data.status === "deleted"){
       alert("削除しました");
 
-      // 名前リセット
       document.getElementById("name").value = "";
 
-      // 状態リセット
       for(let i = 0; i < answers.length; i++){
         answers[i] = "";
-        document.getElementById("ans" + i).textContent = "";
+        document.getElementById("ans"+i).textContent = "";
       }
 
     } else {
       alert("該当データがありません");
     }
+  })
+  .catch(err => {
+    console.log("error:", err);
   });
 }
 

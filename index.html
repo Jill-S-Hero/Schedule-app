@@ -61,12 +61,22 @@ function deleteData(){
   .then(data => {
     if(data.status === "deleted"){
       alert("削除しました");
+
+      // 名前リセット
       document.getElementById("name").value = "";
+
+      // 状態リセット
+      for(let i = 0; i < answers.length; i++){
+        answers[i] = "";
+        document.getElementById("ans" + i).textContent = "";
+      }
+
     } else {
       alert("該当データがありません");
     }
   });
 }
+
 </script>
 
 </body>

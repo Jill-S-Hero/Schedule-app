@@ -56,7 +56,17 @@ function deleteData(){
       mode:"delete",
       name:document.getElementById("name").value
     })
-  }).then(()=>alert("削除しました"));
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "deleted"){
+      alert("削除しました");
+      document.getElementById("name").value = "";
+      selectedValue = "";
+    } else {
+      alert("該当データがありません");
+    }
+  });
 }
 </script>
 

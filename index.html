@@ -57,17 +57,22 @@ function deleteData(){
       name:document.getElementById("name").value
     })
   })
-  .then(res => res.text())   // ←ここ変える
-  .then(text => {
-    console.log(text); // デバッグ用
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "deleted"){
+      alert("削除しました");
 
-    alert("削除しました");
+      // 名前リセット
+      document.getElementById("name").value = "";
 
-    document.getElementById("name").value = "";
+      // 状態リセット
+      for(let i = 0; i < answers.length; i++){
+        answers[i] = "";
+        document.getElementById("ans" + i).textContent = "";
+      }
 
-    for(let i = 0; i < answers.length; i++){
-      answers[i] = "";
-      document.getElementById("ans" + i).textContent = "";
+    } else {
+      alert("該当データがありません");
     }
   });
 }

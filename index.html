@@ -38,8 +38,7 @@ fetch("https://script.google.com/macros/s/AKfycbxe42BvmuGPVRvmWHbBvJ_kiu522k-sUT
     data[month].forEach(d=>{
   const i = dates.length;
 
-  // ★ここ追加
-  const dObj = new Date(d);
+  const formatted = d; // ←これだけでOK
 
   dates.push(formatted);
   answers.push("");
@@ -53,7 +52,7 @@ fetch("https://script.google.com/macros/s/AKfycbxe42BvmuGPVRvmWHbBvJ_kiu522k-sUT
     <span id="ans${i}"></span>
   `;
   container.appendChild(div);
-    });
+　　});
   });
 });
 

@@ -25,7 +25,7 @@ button { margin:5px; padding:8px; }
 let dates = [];
 let answers = [];
 
-fetch("https://script.google.com/macros/s/AKfycby2WlTlfvIh1JI7SlfbpotNBvrLZGkpS_aMPUcVAbgynK6APoWiYEva-sV0FgW7afMLrA/exec")
+fetch("https://script.google.com/macros/s/AKfycbzYmhWG7wwmAupjmAEQK6gARSQEoJswwGRKBWLGZFWWlHB7lBfaA_4cu8Ccu9L8D56xyA/exec")
 .then(res=>res.json())
 .then(data=>{
   const container = document.getElementById("dates");
@@ -79,7 +79,7 @@ function submitData(){
     return;
   }
 
-  fetch("https://script.google.com/macros/s/AKfycby2WlTlfvIh1JI7SlfbpotNBvrLZGkpS_aMPUcVAbgynK6APoWiYEva-sV0FgW7afMLrA/exec",{
+  fetch("https://script.google.com/macros/s/AKfycbzYmhWG7wwmAupjmAEQK6gARSQEoJswwGRKBWLGZFWWlHB7lBfaA_4cu8Ccu9L8D56xyA/exec",{
     method:"POST",
     body:JSON.stringify({
       name:name,

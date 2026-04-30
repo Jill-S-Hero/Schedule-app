@@ -2,53 +2,92 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>日程調整</title>
+<style>
+button { margin:5px; padding:8px; }
+.selected { background:#333; color:#fff; }
+.unselected { background:#eee; color:#999; }
+</style>
 </head>
 
 <body>
 
-<h2>ご都合を教えてください🌿</h2>
+<h2>うず絵画教室 出欠</h2>
 
 <input id="name" placeholder="お名前"><br><br>
+<input id="email" placeholder="メール（任意）"><br>
+<p>入力結果を受け取りたい場合はメールアドレスを入力してください</p>
 
 <div id="dates"></div>
 
 <button onclick="submitData()">送信</button>
 
 <script>
-const dates = ["5/10","5/12","5/15"];
-const answers = Array(dates.length).fill("");
+let dates = [];
+let answers = [];
 
-const container = document.getElementById("dates");
+fetch("https://script.google.com/macros/s/AKfycbyRmCFxXUu2GIJutJnKek3lNmDlNWUkDjRzEdEHVyBwL7vr0B1azhcoZoY_JOKvwGFzSg/exec")
+.then(res=>res.json())
+.then(data=>{
+  const container = document.getElementById("dates");
 
-dates.forEach((d,i)=>{
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <p>${d}</p>
-    <button onclick="setAnswer(${i},'◎')">◎</button>
-    <button onclick="setAnswer(${i},'○')">○</button>
-    <button onclick="setAnswer(${i},'△')">△</button>
-    <button onclick="setAnswer(${i},'×')">×</button>
-    <span id="ans${i}"></span>
-  `;
-  container.appendChild(div);
+  Object.keys(data).forEach(month=>{
+    const h = document.createElement("h3");
+    h.textContent = month;
+    container.appendChild(h);
+
+    data[month].forEach(d=>{
+      const i = dates.length;
+      dates.push(d);
+      answers.push("");
+
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <p>${d}</p>
+        <button onclick="setAnswer(${i},'○',this)">○</button>
+        <button onclick="setAnswer(${i},'△',this)">△</button>
+        <button onclick="setAnswer(${i},'×',this)">×</button>
+        <span id="ans${i}"></span>
+      `;
+      container.appendChild(div);
+    });
+  });
 });
 
-function setAnswer(i,val){
-  answers[i] = val;
-  document.getElementById("ans"+i).textContent = val;
+function setAnswer(i,val,btn){
+  answers[i]=val;
+  document.getElementById("ans"+i).textContent=val;
+
+  const buttons = btn.parentNode.querySelectorAll("button");
+  buttons.forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
 }
 
 function submitData(){
-  fetch("https://script.google.com/macros/s/AKfycbxPWXB5_XWQeCqqfeTCFNgT7L7qajEq8UdQwzqhmwL3wrftIXbkrgIwcHhVIyH85CYX4A/exec",{
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+
+  if(!name){
+    alert("名前を入力してください");
+    return;
+  }
+
+  if(answers.every(a=>!a)){
+    alert("１つ以上選択してください");
+    return;
+  }
+
+  fetch("https://script.google.com/macros/s/AKfycbyRmCFxXUu2GIJutJnKek3lNmDlNWUkDjRzEdEHVyBwL7vr0B1azhcoZoY_JOKvwGFzSg/exec",{
     method:"POST",
     body:JSON.stringify({
-      name: document.getElementById("name").value,
-      answers: answers
+      name:name,
+      email:email,
+      dates:dates,
+      answers:answers,
+      monthText:"今月",
+      url:location.href
     })
   }).then(()=>alert("送信完了🌿"));
 }
-
 </script>
 
 </body>

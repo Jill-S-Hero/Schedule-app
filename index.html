@@ -36,19 +36,24 @@ fetch("https://script.google.com/macros/s/AKfycbxe42BvmuGPVRvmWHbBvJ_kiu522k-sUT
     container.appendChild(h);
 
     data[month].forEach(d=>{
-      const i = dates.length;
-      dates.push(d);
-      answers.push("");
+  const i = dates.length;
 
-      const div = document.createElement("div");
-      div.innerHTML = `
-        <p>${d}</p>
-        <button onclick="setAnswer(${i},'○',this)">○</button>
-        <button onclick="setAnswer(${i},'△',this)">△</button>
-        <button onclick="setAnswer(${i},'×',this)">×</button>
-        <span id="ans${i}"></span>
-      `;
-      container.appendChild(div);
+  // ★ここ追加
+  const dObj = new Date(d);
+  const formatted = (dObj.getMonth()+1) + "/" + dObj.getDate();
+
+  dates.push(formatted);
+  answers.push("");
+
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <p>${formatted}</p>
+    <button onclick="setAnswer(${i},'○',this)">○</button>
+    <button onclick="setAnswer(${i},'△',this)">△</button>
+    <button onclick="setAnswer(${i},'×',this)">×</button>
+    <span id="ans${i}"></span>
+  `;
+  container.appendChild(div);
     });
   });
 });

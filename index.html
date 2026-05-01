@@ -81,8 +81,8 @@ fetch(API_URL)
 
     if (key === "名前" || key === "メール" || key === "更新日時") return;
 
-    const parts = key.split("/");
-    const month = parts[0] ? parts[0] + "月" : "";
+    // key = "6/3" みたいな形前提
+    const month = key.split("/")[0] + "月";
 
     if (month !== currentMonth) {
       currentMonth = month;
@@ -117,9 +117,10 @@ fetch(API_URL)
 
 
 // =======================
-// 回答
+// 回答処理
 // =======================
 function setAnswer(i, val, btn) {
+
   answers[i] = val;
   document.getElementById("ans" + i).textContent = val;
 
@@ -166,7 +167,7 @@ function submitData() {
       }
 
     } catch (e) {
-      alert("レスポンスエラー");
+      alert("レスポンス解析エラー");
     }
 
   })

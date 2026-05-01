@@ -29,13 +29,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbw2RVyLbpXcv74tcMqlaJI3
 
 // 日付取得
 fetch(API_URL)
-.then(res => res.text())
-.then(text => {
-
-  console.log("生データ:", text); // ←確認用
-
-  const data = JSON.parse(text);
-
+.then(res => res.json())
+.then(data => {
   const container = document.getElementById("dates");
 
   Object.keys(data).forEach(month => {
@@ -47,6 +42,7 @@ fetch(API_URL)
 
       const i = dates.length;
 
+      // ★日付を完全一致形式にする
       const parts = String(d).split("/");
       const formatted = Number(parts[0]) + "/" + Number(parts[1]);
 
@@ -64,10 +60,6 @@ fetch(API_URL)
       container.appendChild(div);
     });
   });
-
-})
-.catch(err => {
-  console.error("日付取得エラー:", err);
 });
 
 // 回答セット
@@ -76,4 +68,51 @@ function setAnswer(i,val,btn){
   document.getElementById("ans"+i).textContent = val;
 
   const buttons = btn.parentNode.querySelectorAll("button");
-  buttons.forEach(b => b.classList.remove("selected
+  buttons.forEach(b => b.classList.remove("selected"));
+  btn.classList.add("selected");
+}
+
+// 送信
+function submitData(){
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+
+  if(!name){
+    alert("名前を入力してください");
+    return;
+  }
+
+  if(answers.every(a => !a)){
+    alert("１つ以上選択してください");
+    return;
+  }
+
+  fetch(API_URL,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      name:name,
+      email:email,
+      dates:dates,
+      answers:answers,
+      monthText:"今月",
+      url:location.href
+    })
+  })
+  .then(res => res.text())
+  .then(res => {
+    console.log(res);
+    alert("送信完了🌿");
+  })
+  .catch(err => {
+    console.error(err);
+    alert("送信エラー");
+  });
+}
+</script>
+
+</body>
+</html>

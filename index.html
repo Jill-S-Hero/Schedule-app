@@ -69,11 +69,14 @@ fetch(API_URL)
 
   const container = document.getElementById("dates");
 
-  // ★ここが完全修正版（フラット対応）
   Object.keys(data).forEach(key => {
 
-    // 除外（システム系）
-    if (key === "名前" || key === "メール" || key === "更新日時") return;
+    // ★ここが重要（不要な列を完全除外）
+    if (
+      key === "名前" ||
+      key === "メール" ||
+      key === "更新日時"
+    ) return;
 
     const i = dates.length;
 

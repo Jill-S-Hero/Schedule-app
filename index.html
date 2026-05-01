@@ -13,39 +13,36 @@ button { margin:5px; padding:8px; }
 <h2>うず絵画教室 出欠</h2>
 
 <input id="name" placeholder="お名前"><br><br>
-<input id="email" placeholder="メール（任意）"><br>
-<p>入力結果を受け取りたい場合はメールアドレスを入力してください</p>
+<input id="email" placeholder="メール（任意）"><br><br>
 
-<div id="loading">読み込み中...</div>
 <div id="dates"></div>
 
 <button onclick="submitData()">送信</button>
 
 <script>
+
 let dates = [];
 let answers = [];
 
-// ★ここだけ自分のURL
 const API_URL = "https://script.google.com/macros/s/AKfycbw2RVyLbpXcv74tcMqlaJI3hSAuZaui77dKr_3FQwdL-xvUE7fVQGJpYs98UEk7XRpIlQ/exec";
 
+// =======================
 // 日付取得
+// =======================
 fetch(API_URL)
-.then(res => res.text())
-.then(text => {
-
-  console.log("生データ:", text); // ←確認用
-
-  const data = JSON.parse(text);
+.then(res => res.json())
+.then(data => {
 
   const container = document.getElementById("dates");
 
   Object.keys(data).forEach(month => {
+
     const h = document.createElement("h3");
     h.textContent = month;
     container.appendChild(h);
 
     data[month].forEach(d => {
-      console.log("date:", d);  // ←コンソールログ
+
       const i = dates.length;
 
       const parts = String(d).split("/");
@@ -65,16 +62,12 @@ fetch(API_URL)
       container.appendChild(div);
     });
   });
-
-  // 読込完了後ローディング表示消す
-  document.getElementById("loading").style.display = "none";
-})
-
-.catch(err => {
-  console.error("日付取得エラー:", err);
 });
 
-// 回答セット
+
+// =======================
+// 回答
+// =======================
 function setAnswer(i,val,btn){
   answers[i] = val;
   document.getElementById("ans"+i).textContent = val;
@@ -84,7 +77,10 @@ function setAnswer(i,val,btn){
   btn.classList.add("selected");
 }
 
+
+// =======================
 // 送信
+// =======================
 function submitData(){
 
   const name = document.getElementById("name").value.trim();
@@ -95,32 +91,29 @@ function submitData(){
     return;
   }
 
-  if(answers.every(a => !a)){
-    alert("１つ以上選択してください");
-    return;
-  }
-
-  fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({
-      name:name,
-      email:email,
-      dates:dates,
-      answers:answers,
-      monthText:"今月",
-      url:location.href
+  fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      dates: dates,
+      answers: answers
     })
   })
   .then(res => res.text())
   .then(res => {
     console.log(res);
-    alert("送信完了🌿");
+    alert("送信完了");
   })
   .catch(err => {
     console.error(err);
     alert("送信エラー");
   });
 }
+
 </script>
 
 </body>

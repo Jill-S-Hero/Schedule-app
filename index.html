@@ -6,7 +6,7 @@
 <style>
 body { font-family: sans-serif; }
 button { margin:5px; padding:8px; }
-.selected { background:#333; color:#fff; color:white; }
+.selected { background:#333; color:white; }
 h3 { border-bottom:1px solid #ddd; margin-top:20px; }
 input { margin-bottom:10px; padding:5px; }
 </style>
@@ -27,7 +27,7 @@ input { margin-bottom:10px; padding:5px; }
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwi87UMUbKDrweKO4n3lvNKZLv4JUA43uM9vEXGsKPVf5O4VYrG3Die-vNFTJhRJ_Xh/exec";
+const API_URL = "あなたのGAS URL";
 
 let dates = [];
 let answers = [];
@@ -46,18 +46,15 @@ fetch(API_URL)
 
   Object.keys(data).forEach(key => {
 
-    // 除外キー
     if (["名前","メール","更新日時"].includes(key)) return;
 
-    // 日付形式だけ通す（重要）
+    // 6/3形式だけ通す
     if (!/^\d{1,2}\/\d{1,2}$/.test(key)) return;
 
-    // 月計算用
-    const parts = key.split("/");
-    const month = parts[0] + "月";
+    const [m, d] = key.split("/");
 
-    if (month !== currentMonth) {
-      currentMonth = month;
+    if (m + "月" !== currentMonth) {
+      currentMonth = m + "月";
 
       const h = document.createElement("h3");
       h.textContent = currentMonth;

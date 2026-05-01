@@ -52,6 +52,7 @@ button { margin:5px; padding:8px; }
 <button onclick="submitData()">送信</button>
 
 <script>
+const API_URL = "https://script.google.com/macros/s/XXXX/exec?v=" + Date.now();
 
 let dates = [];
 let answers = [];
@@ -116,14 +117,33 @@ function setAnswer(i,val,btn){
 // =======================
 function submitData(){
 
-  fetch("https://script.google.com")
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
 
-  .then(r => r.text())
+  if(!name){
+    alert("名前を入力してください");
+    return;
+  }
 
-  .then(t => alert("OK"))
-
-  .catch(e => alert("NG"));
-
+  fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name,
+      email,
+      dates,
+      answers
+    })
+  })
+  .then(res => res.text())
+  .then(() => {
+    alert("送信完了");
+  })
+  .catch(() => {
+    alert("送信エラー");
+  });
 }
 
 </script>

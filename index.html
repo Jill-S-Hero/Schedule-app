@@ -126,20 +126,27 @@ function submitData(){
   }
 
   fetch(API_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "text/plain"
-  },
-  body: "test"
-})
-.then(res => res.text())
-.then(text => {
-  alert("OK: " + text);
-})
-.catch(err => {
-  alert("ERROR: " + err);
-  console.log(err);
-});
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      dates: dates,
+      answers: answers
+    })
+  })
+  .then(res => res.text())
+  .then(text => {
+    console.log(text);
+    alert("送信完了");
+  })
+  .catch(err => {
+    console.error(err);
+    alert("送信エラー");
+  });
+}
 
 </script>
 

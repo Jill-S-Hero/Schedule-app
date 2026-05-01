@@ -58,9 +58,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwrfToJ4wPDQ6jE4PZ-Xovi
 let dates = [];
 let answers = [];
 
-// =======================
-// 正規化
-// =======================
 function normalize(d) {
 
   const date = new Date(d);
@@ -87,8 +84,6 @@ function normalize(d) {
   };
 }
 
-// =======================
-// 表示
 // =======================
 fetch(API_URL)
 .then(res => res.json())
@@ -160,7 +155,6 @@ function submitData(){
       answers
     })
   })
-  .then(r => r.text())
   .then(() => alert("送信完了"))
   .catch(() => alert("送信エラー"));
 }

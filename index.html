@@ -125,13 +125,10 @@ function submitData(){
     return;
   }
 
-  fetch(API_URL, {
-  method: "POST",
-  mode: "no-cors",
-  body: "test"
-})
-.then(() => {
-  alert("送信完了（応答なしモード）");
+  fetch(API_URL)
+.then(res => res.text())
+.then(text => {
+  alert("RESPONSE: " + text);
 })
 .catch(err => {
   alert("ERROR: " + err);

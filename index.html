@@ -29,8 +29,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbw2RVyLbpXcv74tcMqlaJI3
 
 // 日付取得
 fetch(API_URL)
-.then(res => res.json())
-.then(data => {
+.then(res => res.text())
+.then(text => {
+
+  console.log("生データ:", text); // ←確認用
+
+  const data = JSON.parse(text);
+
   const container = document.getElementById("dates");
 
   Object.keys(data).forEach(month => {
@@ -42,7 +47,6 @@ fetch(API_URL)
 
       const i = dates.length;
 
-      // ★日付を完全一致形式にする
       const parts = String(d).split("/");
       const formatted = Number(parts[0]) + "/" + Number(parts[1]);
 
@@ -60,6 +64,10 @@ fetch(API_URL)
       container.appendChild(div);
     });
   });
+
+})
+.catch(err => {
+  console.error("日付取得エラー:", err);
 });
 
 // 回答セット

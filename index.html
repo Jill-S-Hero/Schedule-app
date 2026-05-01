@@ -111,28 +111,20 @@ function setAnswer(i,val,btn){
   btn.classList.add("selected");
 }
 
-
 // =======================
 // 送信
 // =======================
 function submitData(){
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
+  fetch("https://script.google.com")
 
-  if(!name){
-    alert("名前を入力してください");
-    return;
-  }
+  .then(r => r.text())
 
-  fetch(API_URL)
-.then(res => res.text())
-.then(t => {
-  alert("OK: " + t);
-})
-.catch(e => {
-  alert("ERROR: " + e);
-});
+  .then(t => alert("OK"))
+
+  .catch(e => alert("NG"));
+
+}
 
 </script>
 

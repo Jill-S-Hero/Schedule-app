@@ -79,8 +79,8 @@ fetch(API_URL)
 
       const i = dates.length;
 
-      const parts = String(d).split("/");
-      const formatted = Number(parts[0]) + "/" + Number(parts[1]);
+      // ★そのまま使う（重要）
+      const formatted = String(d);
 
       dates.push(formatted);
       answers.push("");

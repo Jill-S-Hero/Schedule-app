@@ -9,38 +9,68 @@ button { margin:5px; padding:8px; }
 .selected { background:#333; color:white; }
 h3 { border-bottom:1px solid #ddd; margin-top:20px; }
 input { margin-bottom:10px; padding:5px; }
+
+#loading {
+  position: fixed;
+  inset: 0;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
 
 </head>
 
 <body>
 
+<div id="loading">
+  <div class="spinner"></div>
+  <p>読み込み中...</p>
+</div>
+
 <h2>うず絵画教室 出欠</h2>
 
 <input id="name" placeholder="お名前"><br>
 <input id="email" placeholder="メール（任意）"><br><br>
 
-<div id="dates">読み込み中...</div>
+<div id="dates"></div>
 
 <br>
 <button onclick="submitData()">送信</button>
 
 <script>
 
-const API_URL = "あなたのGAS URL";
+const API_URL = "https://script.google.com/macros/s/AKfycbwi87UMUbKDrweKO4n3lvNKZLv4JUA43uM9vEXGsKPVf5O4VYrG3Die-vNFTJhRJ_Xh/exec";
 
 let dates = [];
 let answers = [];
 
 // =======================
-// GET
+// GET（安定版）
 // =======================
 fetch(API_URL)
 .then(res => res.json())
 .then(data => {
 
+  document.getElementById("loading").style.display = "none";
+
   const container = document.getElementById("dates");
-  container.innerHTML = "";
 
   let currentMonth = "";
 
@@ -48,12 +78,11 @@ fetch(API_URL)
 
     if (["名前","メール","更新日時"].includes(key)) return;
 
-    // 6/3形式だけ通す
     if (!/^\d{1,2}\/\d{1,2}$/.test(key)) return;
 
     const [m, d] = key.split("/");
 
-    if (m + "月" !== currentMonth) {
+    if (currentMonth !== m + "月") {
       currentMonth = m + "月";
 
       const h = document.createElement("h3");
@@ -80,7 +109,7 @@ fetch(API_URL)
 })
 .catch(err => {
   console.log(err);
-  document.getElementById("dates").innerHTML = "読み込みエラー";
+  document.getElementById("loading").innerHTML = "読み込みエラー";
 });
 
 

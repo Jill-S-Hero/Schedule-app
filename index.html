@@ -59,6 +59,21 @@ let dates = [];
 let answers = [];
 
 // =======================
+// 日付フォーマット
+// =======================
+function formatDate(d) {
+
+  const date = new Date(d);
+
+  if (isNaN(date.getTime())) return String(d);
+
+  const m = date.getMonth() + 1;
+  const day = date.getDate();
+
+  return m + "/" + day;
+}
+
+// =======================
 // データ取得
 // =======================
 fetch(API_URL)
@@ -71,7 +86,7 @@ fetch(API_URL)
 
   Object.keys(data).forEach(key => {
 
-    // ★ここが重要（不要な列を完全除外）
+    // 不要列は除外
     if (
       key === "名前" ||
       key === "メール" ||
@@ -80,7 +95,7 @@ fetch(API_URL)
 
     const i = dates.length;
 
-    const formatted = key;
+    const formatted = formatDate(key);
 
     dates.push(formatted);
     answers.push("");

@@ -127,11 +127,11 @@ function submitData(){
 
   fetch(API_URL)
 .then(res => res.text())
-.then(text => {
-  alert("RESPONSE: " + text);
+.then(t => {
+  alert("OK: " + t);
 })
-.catch(err => {
-  alert("ERROR: " + err);
+.catch(e => {
+  alert("ERROR: " + e);
 });
 
 </script>

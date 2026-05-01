@@ -34,7 +34,7 @@ button { margin:5px; padding:8px; }
 h3 {
   margin-top: 20px;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 5px;
+  padding-bottom: 4px;
 }
 </style>
 
@@ -64,22 +64,27 @@ let dates = [];
 let answers = [];
 
 // =======================
-// 日付整形
+// 月ラベル（ここが完全修正版）
 // =======================
-function formatDate(d) {
-  const date = new Date(d);
-  if (isNaN(date.getTime())) return String(d);
+function getMonthLabel(d) {
 
-  return (date.getMonth() + 1) + "/" + date.getDate();
+  const str = String(d);
+  const parts = str.split("/");
+
+  if (parts.length < 2) return "その他";
+
+  const month = Number(parts[0]);
+
+  if (isNaN(month)) return "その他";
+
+  return month + "月";
 }
 
 // =======================
-// 月ラベル
+// 日付そのまま表示
 // =======================
-function getMonthLabel(d) {
-  const date = new Date(d);
-  if (isNaN(date.getTime())) return "その他";
-  return (date.getMonth() + 1) + "月";
+function formatDate(d) {
+  return String(d);
 }
 
 // =======================
@@ -140,7 +145,7 @@ fetch(API_URL)
 
 
 // =======================
-// 回答
+// 回答処理
 // =======================
 function setAnswer(i,val,btn){
   answers[i] = val;

@@ -5,7 +5,6 @@
 <style>
 button { margin:5px; padding:8px; }
 .selected { background:#333; color:#fff; }
-.unselected { background:#eee; color:#999; }
 </style>
 </head>
 
@@ -25,61 +24,70 @@ button { margin:5px; padding:8px; }
 let dates = [];
 let answers = [];
 
-fetch("https://script.google.com/macros/s/AKfycbzYmhWG7wwmAupjmAEQK6gARSQEoJswwGRKBWLGZFWWlHB7lBfaA_4cu8Ccu9L8D56xyA/exec")
-.then(res=>res.json())
-.then(data=>{
+const API_URL = "https://script.google.com/macros/s/AKfycbzYmhWG7wwmAupjmAEQK6gARSQEoJswwGRKBWLGZFWWlHB7lBfaA_4cu8Ccu9L8D56xyA/exec";
+
+// 日付取得
+fetch(API_URL)
+.then(res => res.json())
+.then(data => {
   const container = document.getElementById("dates");
 
-  Object.keys(data).forEach(month=>{
+  Object.keys(data).forEach(month => {
     const h = document.createElement("h3");
     h.textContent = month;
     container.appendChild(h);
 
-    data[month].forEach(d=>{
-  const i = dates.length;
+    data[month].forEach(d => {
 
-  const formatted = d; // ←これだけでOK
+      const i = dates.length;
 
-  dates.push(formatted);
-  answers.push("");
+      // ★完全統一（重要）
+      const parts = String(d).split("/");
+      const formatted = Number(parts[0]) + "/" + Number(parts[1]);
 
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <p>${formatted}</p>
-    <button onclick="setAnswer(${i},'○',this)">○</button>
-    <button onclick="setAnswer(${i},'△',this)">△</button>
-    <button onclick="setAnswer(${i},'×',this)">×</button>
-    <span id="ans${i}"></span>
-  `;
-  container.appendChild(div);
-   });
+      dates.push(formatted);
+      answers.push("");
+
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <p>${formatted}</p>
+        <button onclick="setAnswer(${i},'○',this)">○</button>
+        <button onclick="setAnswer(${i},'△',this)">△</button>
+        <button onclick="setAnswer(${i},'×',this)">×</button>
+        <span id="ans${i}"></span>
+      `;
+      container.appendChild(div);
+    });
   });
 });
 
+// 回答セット
 function setAnswer(i,val,btn){
-  answers[i]=val;
-  document.getElementById("ans"+i).textContent=val;
+  answers[i] = val;
+  document.getElementById("ans"+i).textContent = val;
 
   const buttons = btn.parentNode.querySelectorAll("button");
-  buttons.forEach(b=>b.classList.remove("selected"));
+  buttons.forEach(b => b.classList.remove("selected"));
   btn.classList.add("selected");
 }
 
+// 送信
 function submitData(){
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
 
   if(!name){
     alert("名前を入力してください");
     return;
   }
 
-  if(answers.every(a=>!a)){
+  if(answers.every(a => !a)){
     alert("１つ以上選択してください");
     return;
   }
 
-  fetch("https://script.google.com/macros/s/AKfycbzYmhWG7wwmAupjmAEQK6gARSQEoJswwGRKBWLGZFWWlHB7lBfaA_4cu8Ccu9L8D56xyA/exec",{
+  fetch(API_URL,{
     method:"POST",
     body:JSON.stringify({
       name:name,
@@ -89,7 +97,16 @@ function submitData(){
       monthText:"今月",
       url:location.href
     })
-  }).then(()=>alert("送信完了🌿"));
+  })
+  .then(res => res.text())
+  .then(res => {
+    console.log(res);
+    alert("送信完了🌿");
+  })
+  .catch(err => {
+    console.error(err);
+    alert("送信エラー");
+  });
 }
 </script>
 

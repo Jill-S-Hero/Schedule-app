@@ -82,7 +82,7 @@ fetch(API_URL)
     if (key === "名前" || key === "メール" || key === "更新日時") return;
 
     // key = "6/3" みたいな形前提
-    const month = key.split("/")[0] + "月";
+    const month = (key.includes("/") ? key.split("/")[0] : key) + "月";
 
     if (month !== currentMonth) {
       currentMonth = month;

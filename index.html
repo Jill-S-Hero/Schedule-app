@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 
 <style>
+body { font-family: sans-serif; }
 button { margin:5px; padding:8px; }
-.selected { background:#333; color:#fff; }
+.selected { background:#333; color:#fff; color:white; }
 h3 { border-bottom:1px solid #ddd; margin-top:20px; }
+input { margin-bottom:10px; padding:5px; }
 </style>
 
 </head>
@@ -15,10 +17,10 @@ h3 { border-bottom:1px solid #ddd; margin-top:20px; }
 
 <h2>うず絵画教室 出欠</h2>
 
-<input id="name" placeholder="お名前"><br><br>
-<input id="email" placeholder="メール"><br><br>
+<input id="name" placeholder="お名前"><br>
+<input id="email" placeholder="メール（任意）"><br><br>
 
-<div id="dates"></div>
+<div id="dates">読み込み中...</div>
 
 <br>
 <button onclick="submitData()">送信</button>
@@ -38,48 +40,50 @@ fetch(API_URL)
 .then(data => {
 
   const container = document.getElementById("dates");
+  container.innerHTML = "";
 
   let currentMonth = "";
 
   Object.keys(data).forEach(key => {
 
+    // 除外キー
     if (["名前","メール","更新日時"].includes(key)) return;
 
-    const dateObj = new Date(key);
+    // 日付形式だけ通す（重要）
+    if (!/^\d{1,2}\/\d{1,2}$/.test(key)) return;
 
-    if (!isNaN(dateObj)) {
+    // 月計算用
+    const parts = key.split("/");
+    const month = parts[0] + "月";
 
-      const month = (dateObj.getMonth() + 1) + "月";
+    if (month !== currentMonth) {
+      currentMonth = month;
 
-      if (month !== currentMonth) {
-        currentMonth = month;
-        const h = document.createElement("h3");
-        h.textContent = month;
-        container.appendChild(h);
-      }
-
-      const i = dates.length;
-
-      dates.push(key);
-      answers.push("");
-
-      const div = document.createElement("div");
-
-      div.innerHTML = `
-        <p>${key}</p>
-        <button onclick="setAnswer(${i},'○',this)">○</button>
-        <button onclick="setAnswer(${i},'△',this)">△</button>
-        <button onclick="setAnswer(${i},'×',this)">×</button>
-      `;
-
-      container.appendChild(div);
+      const h = document.createElement("h3");
+      h.textContent = currentMonth;
+      container.appendChild(h);
     }
 
+    const i = dates.length;
+    dates.push(key);
+    answers.push("");
+
+    const div = document.createElement("div");
+
+    div.innerHTML = `
+      <p>${key}</p>
+      <button onclick="setAnswer(${i},'○',this)">○</button>
+      <button onclick="setAnswer(${i},'△',this)">△</button>
+      <button onclick="setAnswer(${i},'×',this)">×</button>
+    `;
+
+    container.appendChild(div);
   });
 
 })
-.catch(() => {
-  alert("読み込みエラー");
+.catch(err => {
+  console.log(err);
+  document.getElementById("dates").innerHTML = "読み込みエラー";
 });
 
 
@@ -87,6 +91,7 @@ fetch(API_URL)
 // 回答
 // =======================
 function setAnswer(i, val, btn) {
+
   answers[i] = val;
 
   const buttons = btn.parentNode.querySelectorAll("button");
@@ -100,11 +105,19 @@ function setAnswer(i, val, btn) {
 // =======================
 function submitData() {
 
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+
+  if (!name) {
+    alert("名前を入力してください");
+    return;
+  }
 
   fetch(API_URL, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       name,
       email,
@@ -114,7 +127,17 @@ function submitData() {
   })
   .then(r => r.json())
   .then(res => {
-    alert(res.ok ? "送信完了" : "エラー");
+
+    if (res.ok) {
+      alert("送信完了");
+    } else {
+      alert("エラー：" + (res.error || "unknown"));
+    }
+
+  })
+  .catch(err => {
+    alert("通信エラー");
+    console.log(err);
   });
 
 }

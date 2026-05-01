@@ -45,7 +45,7 @@ fetch(API_URL)
     container.appendChild(h);
 
     data[month].forEach(d => {
-
+      console.log("date:", d);  // ←コンソールログ
       const i = dates.length;
 
       const parts = String(d).split("/");

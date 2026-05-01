@@ -126,27 +126,16 @@ function submitData(){
   }
 
   fetch(API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: name,
-      email: email,
-      dates: dates,
-      answers: answers
-    })
-  })
-  .then(res => res.text())
-  .then(text => {
-    console.log(text);
-    alert("送信完了");
-  })
-  .catch(err => {
-    console.error(err);
-    alert("送信エラー");
-  });
-}
+  method: "POST",
+  mode: "no-cors",
+  body: "test"
+})
+.then(() => {
+  alert("送信完了（応答なしモード）");
+})
+.catch(err => {
+  alert("ERROR: " + err);
+});
 
 </script>
 

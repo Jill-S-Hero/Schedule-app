@@ -64,27 +64,32 @@ let dates = [];
 let answers = [];
 
 // =======================
-// 月ラベル（ここが完全修正版）
+// 日付正規化（最重要）
 // =======================
-function getMonthLabel(d) {
+function normalizeDate(d) {
 
-  const str = String(d);
-  const parts = str.split("/");
+  const date = new Date(d);
 
-  if (parts.length < 2) return "その他";
+  if (!isNaN(date.getTime())) {
+    return {
+      label: (date.getMonth() + 1) + "月",
+      text: (date.getMonth() + 1) + "/" + date.getDate()
+    };
+  }
 
-  const month = Number(parts[0]);
+  const parts = String(d).split("/");
 
-  if (isNaN(month)) return "その他";
+  if (parts.length >= 2) {
+    return {
+      label: parts[0] + "月",
+      text: parts[0] + "/" + parts[1]
+    };
+  }
 
-  return month + "月";
-}
-
-// =======================
-// 日付そのまま表示
-// =======================
-function formatDate(d) {
-  return String(d);
+  return {
+    label: "その他",
+    text: String(d)
+  };
 }
 
 // =======================
@@ -108,8 +113,10 @@ fetch(API_URL)
       key === "更新日時"
     ) return;
 
-    const dateStr = formatDate(key);
-    const month = getMonthLabel(key);
+    const obj = normalizeDate(key);
+
+    const month = obj.label;
+    const dateStr = obj.text;
 
     // 月が変わったら見出し
     if (month !== currentMonth) {
@@ -145,7 +152,7 @@ fetch(API_URL)
 
 
 // =======================
-// 回答処理
+// 回答
 // =======================
 function setAnswer(i,val,btn){
   answers[i] = val;

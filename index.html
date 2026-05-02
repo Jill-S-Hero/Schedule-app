@@ -76,7 +76,7 @@ input {
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwa9vAV1dJllRnCm_d53l34DKoJ4VzaXDwly_ZAHM-30rv-LtitUEej5FE-es-6I0w9/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwLsLzKhNAIdEOv_Q2VWZtN72XAvA6VRpV9LPWfpAEr1LQlHrXcjRkVovyk6O1TMzA6/exec";
 
 let dates = [];
 let answers = [];
@@ -93,10 +93,10 @@ fetch(API_URL)
 
   data.dates.forEach(d => {
 
-const parts = d.split("T")[0].split("-");
+const date = new Date(d);
 
-const m = Number(parts[1]);
-const day = Number(parts[2]);
+const m = date.getMonth() + 1;
+const day = date.getDate();
 
 const display = `${m}/${day}`;
 

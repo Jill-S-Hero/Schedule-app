@@ -93,11 +93,12 @@ fetch(API_URL)
 
   data.dates.forEach(d => {
 
-    const date = new Date(d);
-    const m = date.getMonth()+1;
-    const day = date.getDate();
+const parts = d.split("T")[0].split("-");
 
-    const display = `${m}/${day}`;
+const m = Number(parts[1]);
+const day = Number(parts[2]);
+
+const display = `${m}/${day}`;
 
     if(currentMonth !== m){
       currentMonth = m;

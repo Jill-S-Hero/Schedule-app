@@ -76,7 +76,7 @@ input {
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbzdMIWKc1l0qEx9q_fgC2yyV2_9oXagZfGZbjZ_W2bu1jP2ZE5rekPxgbPTzTZyRIj6/exec";
+const API_URL = "ここに新しいGASのURL";
 
 let dates = [];
 let answers = [];
@@ -113,7 +113,7 @@ fetch(API_URL)
 
     const i = dates.length;
 
-    dates.push(key); // 送信用
+    dates.push(key);
     answers.push("");
 
     const div = document.createElement("div");
@@ -150,7 +150,7 @@ function setAnswer(i, val, btn) {
 
 
 // =======================
-// 送信（デバッグ強化版）
+// POST（CORS回避版）
 // =======================
 function submitData() {
 
@@ -164,9 +164,6 @@ function submitData() {
 
   fetch(API_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
     body: JSON.stringify({
       name,
       email,
@@ -176,12 +173,12 @@ function submitData() {
   })
   .then(async r => {
     const text = await r.text();
-    console.log("サーバー返答:", text);
+    console.log(text);
 
     try {
       return JSON.parse(text);
     } catch {
-      throw new Error("JSONじゃないレスポンス: " + text);
+      throw new Error("JSONじゃないレスポンス");
     }
   })
   .then(res => {
@@ -189,12 +186,11 @@ function submitData() {
     if (res.ok) {
       alert("送信完了");
     } else {
-      alert("エラー：" + (res.error || "unknown"));
+      alert("エラー：" + res.error);
     }
 
   })
   .catch(err => {
-    console.log(err);
     alert("通信エラー: " + err.message);
   });
 }

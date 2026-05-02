@@ -150,6 +150,8 @@ function setAnswer(i, val, btn) {
 
 
 // =======================
+// 送信（デバッグ強化版）
+// =======================
 function submitData() {
 
   const name = document.getElementById("name").value.trim();
@@ -172,20 +174,29 @@ function submitData() {
       answers
     })
   })
-  .then(r => r.json())
+  .then(async r => {
+    const text = await r.text();
+    console.log("サーバー返答:", text);
+
+    try {
+      return JSON.parse(text);
+    } catch {
+      throw new Error("JSONじゃないレスポンス: " + text);
+    }
+  })
   .then(res => {
 
     if (res.ok) {
       alert("送信完了");
     } else {
-      alert("エラー");
+      alert("エラー：" + (res.error || "unknown"));
     }
 
   })
   .catch(err => {
-  console.log(err);
-  alert("通信エラー: " + err);
-});
+    console.log(err);
+    alert("通信エラー: " + err.message);
+  });
 }
 
 </script>

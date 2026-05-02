@@ -182,9 +182,10 @@ function submitData() {
     }
 
   })
-  .catch(() => {
-    alert("通信エラー");
-  });
+  .catch(err => {
+  console.log(err);
+  alert("通信エラー: " + err);
+});
 }
 
 </script>

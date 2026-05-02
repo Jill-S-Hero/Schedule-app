@@ -89,47 +89,45 @@ fetch(API_URL)
 .then(data => {
 
   const container = document.getElementById("dates");
-
   let currentMonth = "";
+
+  if (!data.dates) {
+    document.getElementById("loading").innerHTML = "データ取得エラー";
+    return;
+  }
 
   data.dates.forEach(key => {
 
-  const date = new Date(key);
+    const date = new Date(key);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const display = `${month}/${day}`;
 
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+    if (currentMonth !== month + "月") {
+      currentMonth = month + "月";
 
-  const display = `${month}/${day}`;
+      const h = document.createElement("h3");
+      h.textContent = currentMonth;
+      container.appendChild(h);
+    }
 
-  if (currentMonth !== month + "月") {
-    currentMonth = month + "月";
+    const i = dates.length;
 
-    const h = document.createElement("h3");
-    h.textContent = currentMonth;
-    container.appendChild(h);
-  }
+    dates.push(key); // 送信用
+    answers.push("");
 
-  const i = dates.length;
+    const div = document.createElement("div");
 
-  // ★ここ重要
-  dates.push(key);      // ← 元データ（送信用）
-  answers.push("");
+    div.innerHTML = `
+      <p>${display}</p>
+      <button onclick="setAnswer(${i},'○',this)">○</button>
+      <button onclick="setAnswer(${i},'△',this)">△</button>
+      <button onclick="setAnswer(${i},'×',this)">×</button>
+    `;
 
-  const div = document.createElement("div");
-
-  div.innerHTML = `
-    <p>${display}</p>
-    <button onclick="setAnswer(${i},'○',this)">○</button>
-    <button onclick="setAnswer(${i},'△',this)">△</button>
-    <button onclick="setAnswer(${i},'×',this)">×</button>
-  `;
-
-  container.appendChild(div);
-});
-    
+    container.appendChild(div);
   });
 
-  // ローディング消す（最後に）
   document.getElementById("loading").style.display = "none";
 
 })

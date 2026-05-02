@@ -5,11 +5,31 @@
 
 <style>
 body { font-family: sans-serif; }
-button { margin:5px; padding:8px; }
-.selected { background:#333; color:white; }
-h3 { border-bottom:1px solid #ddd; margin-top:20px; }
-input { margin-bottom:10px; padding:5px; }
 
+button {
+  margin:5px;
+  padding:8px;
+  border:1px solid #ccc;
+  background:white;
+}
+
+.selected {
+  background:#333;
+  color:white;
+}
+
+h3 {
+  border-bottom:1px solid #ddd;
+  margin-top:20px;
+}
+
+input {
+  margin-bottom:10px;
+  padding:8px;
+  width:200px;
+}
+
+/* ローディング */
 #loading {
   position: fixed;
   inset: 0;
@@ -47,7 +67,7 @@ input { margin-bottom:10px; padding:5px; }
 <h2>うず絵画教室 出欠</h2>
 
 <input id="name" placeholder="お名前"><br>
-<input id="email" placeholder="メール（任意）"><br><br>
+<input id="email" placeholder="メール（任意）"><br>
 
 <div id="dates"></div>
 
@@ -56,31 +76,25 @@ input { margin-bottom:10px; padding:5px; }
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwi87UMUbKDrweKO4n3lvNKZLv4JUA43uM9vEXGsKPVf5O4VYrG3Die-vNFTJhRJ_Xh/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxveelgXxVPOpXl9SupKWeC0HpL4wbm21MXdd0rwktQzzfA1zLvqg3gU6zHQGWc3eVV/exec";
 
 let dates = [];
 let answers = [];
 
 // =======================
-// GET（安定版）
+// GET
 // =======================
 fetch(API_URL)
 .then(res => res.json())
 .then(data => {
 
-  document.getElementById("loading").style.display = "none";
-
   const container = document.getElementById("dates");
 
   let currentMonth = "";
 
-  Object.keys(data).forEach(key => {
+  data.dates.forEach(key => {
 
-    if (["名前","メール","更新日時"].includes(key)) return;
-
-    if (!/^\d{1,2}\/\d{1,2}$/.test(key)) return;
-
-    const [m, d] = key.split("/");
+    const [m] = key.split("/");
 
     if (currentMonth !== m + "月") {
       currentMonth = m + "月";
@@ -106,6 +120,9 @@ fetch(API_URL)
     container.appendChild(div);
   });
 
+  // ローディング消す（最後に）
+  document.getElementById("loading").style.display = "none";
+
 })
 .catch(err => {
   console.log(err);
@@ -114,20 +131,17 @@ fetch(API_URL)
 
 
 // =======================
-// 回答
-// =======================
 function setAnswer(i, val, btn) {
 
   answers[i] = val;
 
   const buttons = btn.parentNode.querySelectorAll("button");
   buttons.forEach(b => b.classList.remove("selected"));
+
   btn.classList.add("selected");
 }
 
 
-// =======================
-// 送信
 // =======================
 function submitData() {
 
@@ -157,15 +171,13 @@ function submitData() {
     if (res.ok) {
       alert("送信完了");
     } else {
-      alert("エラー：" + (res.error || "unknown"));
+      alert("エラー");
     }
 
   })
-  .catch(err => {
+  .catch(() => {
     alert("通信エラー");
-    console.log(err);
   });
-
 }
 
 </script>

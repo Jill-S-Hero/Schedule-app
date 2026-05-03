@@ -25,13 +25,28 @@ input {
   padding:8px;
   width:200px;
 }
+
+/* ローディング */
 #loading {
   position: fixed;
   inset: 0;
   background: white;
   display:flex;
+  flex-direction: column;
   justify-content:center;
   align-items:center;
+  z-index:9999;
+}
+.spinner {
+  width:40px;
+  height:40px;
+  border:4px solid #ddd;
+  border-top:4px solid #333;
+  border-radius:50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>
 
@@ -39,7 +54,10 @@ input {
 
 <body>
 
-<div id="loading">読み込み中...</div>
+<div id="loading">
+  <div class="spinner"></div>
+  <p>読み込み中...</p>
+</div>
 
 <h2>うず絵画教室 出欠</h2>
 
@@ -48,11 +66,12 @@ input {
 
 <div id="dates"></div>
 
+<br>
 <button onclick="submitData()">送信</button>
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbwQg6PIFHDFD-6czHlWLaePdrVwNETJDM4BgK1DcS59UyFpZvnU35OYNqU1dU5OMIpI/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzsn0ap-liQ0cVekFl9jrrkRpq0dIOElnw3fOeVBGDT66Lvg8FmtFBV0cgV97zR54D2/exec";
 
 let dates = [];
 let answers = [];
@@ -66,12 +85,12 @@ fetch(API_URL)
 
   data.dates.forEach(d => {
 
-    const display = String(d); // ★Date使わない
-
+    const display = String(d);
     const [m, day] = display.split("/").map(Number);
 
     if(currentMonth !== m){
       currentMonth = m;
+
       const h = document.createElement("h3");
       h.textContent = m + "月";
       box.appendChild(h);

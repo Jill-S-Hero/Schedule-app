@@ -29,6 +29,7 @@ input {
   width:200px;
 }
 
+/* ローディング */
 #loading {
   position: fixed;
   inset: 0;
@@ -75,11 +76,14 @@ input {
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbw-ouWhMhObnpW5joDtIIoVGzEPmcpYD-0AakGjIuldacYhyv6XbL8H42wpbi3WqMHf/exec";
+const API_URL = "ここに最新のGASのURL";
 
 let dates = [];
 let answers = [];
 
+// =======================
+// GET
+// =======================
 fetch(API_URL)
 .then(res => res.json())
 .then(data => {
@@ -89,15 +93,9 @@ fetch(API_URL)
 
   data.dates.forEach(d => {
 
-    const date = new Date(d);
-
-    // ★ズレ防止
-    date.setHours(12);
-
-    const m = date.getMonth() + 1;
-    const day = date.getDate();
-
-    const display = `${m}/${day}`;
+    // ★ Dateを使わない（超重要）
+    const display = String(d).trim();
+    const [m, day] = display.split("/").map(Number);
 
     if(currentMonth !== m){
       currentMonth = m;
@@ -132,15 +130,23 @@ fetch(API_URL)
   document.getElementById("loading").innerHTML = "読み込みエラー";
 });
 
+
+// =======================
+// 回答セット
+// =======================
 function setAns(i,val,btn){
-  answers[i]=val;
+  answers[i] = val;
 
   btn.parentNode.querySelectorAll("button")
-    .forEach(b=>b.classList.remove("selected"));
+    .forEach(b => b.classList.remove("selected"));
 
   btn.classList.add("selected");
 }
 
+
+// =======================
+// 送信
+// =======================
 function submitData(){
 
   const name = document.getElementById("name").value.trim();
@@ -155,21 +161,27 @@ function submitData(){
 
   fetch(API_URL,{
     method:"POST",
-    body:JSON.stringify({name,email,dates,answers})
+    body:JSON.stringify({
+      name,
+      email,
+      dates,
+      answers
+    })
   })
-  .then(r=>r.json())
-  .then(res=>{
+  .then(r => r.json())
+  .then(res => {
+
     document.getElementById("loading").style.display = "none";
 
     if(res.ok){
       alert("送信完了");
     }else{
-      alert("エラー："+res.error);
+      alert("エラー：" + res.error);
     }
   })
-  .catch(e=>{
+  .catch(e => {
     document.getElementById("loading").style.display = "none";
-    alert("通信エラー："+e.message);
+    alert("通信エラー：" + e.message);
   });
 }
 

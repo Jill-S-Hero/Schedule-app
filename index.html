@@ -29,29 +29,13 @@ input {
   width:200px;
 }
 
-/* ローディング */
 #loading {
   position: fixed;
   inset: 0;
   background: white;
   display:flex;
-  flex-direction: column;
   justify-content:center;
   align-items:center;
-  z-index:9999;
-}
-
-.spinner {
-  width:40px;
-  height:40px;
-  border:4px solid #ddd;
-  border-top:4px solid #333;
-  border-radius:50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 </style>
 
@@ -59,10 +43,7 @@ input {
 
 <body>
 
-<div id="loading">
-  <div class="spinner"></div>
-  <p>読み込み中...</p>
-</div>
+<div id="loading">読み込み中...</div>
 
 <h2>うず絵画教室 出欠</h2>
 
@@ -71,19 +52,15 @@ input {
 
 <div id="dates"></div>
 
-<br>
 <button onclick="submitData()">送信</button>
 
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycbzZjN8G6yIuueWiT6uMPEuWD_qe5X-zEmeRJWHqJJe583vKnuJRt8ZA1I2hu7L_cheA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxdbNiDjqqTwP4GQyn__cHdsaLOlK8yHguJ3XgmudMXGp9tlfc-WTiOgtNqUzJA2m74/exec";
 
 let dates = [];
 let answers = [];
 
-// =======================
-// GET
-// =======================
 fetch(API_URL)
 .then(res => res.json())
 .then(data => {
@@ -93,8 +70,9 @@ fetch(API_URL)
 
   data.dates.forEach(d => {
 
-    // ★ Dateを使わない（超重要）
-    const display = String(d).trim();
+    // ★絶対にDateにしない
+    const display = String(d);
+
     const [m, day] = display.split("/").map(Number);
 
     if(currentMonth !== m){
@@ -123,30 +101,17 @@ fetch(API_URL)
   });
 
   document.getElementById("loading").style.display = "none";
-
-})
-.catch(err => {
-  console.error(err);
-  document.getElementById("loading").innerHTML = "読み込みエラー";
 });
 
-
-// =======================
-// 回答セット
-// =======================
 function setAns(i,val,btn){
-  answers[i] = val;
+  answers[i]=val;
 
   btn.parentNode.querySelectorAll("button")
-    .forEach(b => b.classList.remove("selected"));
+    .forEach(b=>b.classList.remove("selected"));
 
   btn.classList.add("selected");
 }
 
-
-// =======================
-// 送信
-// =======================
 function submitData(){
 
   const name = document.getElementById("name").value.trim();
@@ -157,31 +122,17 @@ function submitData(){
     return;
   }
 
-  document.getElementById("loading").style.display = "flex";
-
   fetch(API_URL,{
     method:"POST",
-    body:JSON.stringify({
-      name,
-      email,
-      dates,
-      answers
-    })
+    body:JSON.stringify({name,email,dates,answers})
   })
-  .then(r => r.json())
-  .then(res => {
-
-    document.getElementById("loading").style.display = "none";
-
+  .then(r=>r.json())
+  .then(res=>{
     if(res.ok){
       alert("送信完了");
     }else{
-      alert("エラー：" + res.error);
+      alert("エラー："+res.error);
     }
-  })
-  .catch(e => {
-    document.getElementById("loading").style.display = "none";
-    alert("通信エラー：" + e.message);
   });
 }
 

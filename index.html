@@ -135,6 +135,13 @@ function submitData(){
     return;
   }
 
+  // ★これ追加
+  const hasAnswer = answers.some(a => a !== "");
+  if(!hasAnswer){
+    alert("１つ以上選択してください");
+    return;
+  }
+
   fetch(API_URL,{
     method:"POST",
     body:JSON.stringify({name,email,dates,answers})

@@ -135,12 +135,16 @@ function submitData(){
     return;
   }
 
-  // ★これ追加
+  // 未選択エラー
   const hasAnswer = answers.some(a => a !== "");
   if(!hasAnswer){
     alert("１つ以上選択してください");
     return;
   }
+
+    // 送信中ローディング表示
+  document.querySelector("#loading p").textContent = "送信中...";
+  document.getElementById("loading").style.display = "flex";
 
   fetch(API_URL,{
     method:"POST",
@@ -148,12 +152,31 @@ function submitData(){
   })
   .then(r=>r.json())
   .then(res=>{
-    if(res.ok){
-      alert("送信完了");
-    }else{
-      alert("エラー："+res.error);
-    }
-  });
+  document.getElementById("loading").style.display = "none";
+
+  if(res.ok){
+
+    const name = document.getElementById("name").value;
+
+    document.body.innerHTML = `
+      <div style="text-align:center; margin-top:50px;">
+        <h2>入力ありがとうございました</h2>
+        <p>出欠を受け付けました。</p>
+
+        <button onclick="location.reload()" style="
+          margin-top:20px;
+          padding:10px 20px;
+          font-size:16px;
+        ">
+          もう一度入力する
+        </button>
+      </div>
+    `;
+
+  }else{
+    alert("エラー："+res.error);
+  }
+});
 }
 
 </script>

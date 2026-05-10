@@ -69,11 +69,6 @@ button {
   font-weight: bold;
 }
 
-.selected {
-  background: #333;
-  color: white;
-}
-
 /* 月見出し */
 h3 {
   margin-top: 20px;
@@ -114,6 +109,79 @@ h3 {
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* 出欠ボタン */
+.btn-group button {
+  position: relative;
+  background: white;
+  border: 2px solid #ddd;
+  color: transparent;
+  height: 52px;
+  transition: 0.2s;
+}
+
+/* ○ */
+.btn-group button:nth-child(1)::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid #4DA6FF;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+/* △ */
+.btn-group button:nth-child(2)::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-bottom: 20px solid #FFD95A;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+/* × */
+.btn-group button:nth-child(3)::before,
+.btn-group button:nth-child(3)::after {
+  content: "";
+  width: 24px;
+  height: 3px;
+  background: #FFB347;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 999px;
+}
+
+.btn-group button:nth-child(3)::before {
+  transform: rotate(45deg);
+}
+
+.btn-group button:nth-child(3)::after {
+  transform: rotate(-45deg);
+}
+
+/* 選択状態 */
+.btn-group button.selected {
+  background: #f3f9ff;
+  border-color: #4DA6FF;
+  transform: scale(1.03);
+}
+
+/* 送信ボタン */
+.submit-btn {
+  background: #4DA6FF;
+}
+
+/* ローディング */
+.spinner {
+  border-top: 4px solid #4DA6FF;
 }
 </style>
 </head>
